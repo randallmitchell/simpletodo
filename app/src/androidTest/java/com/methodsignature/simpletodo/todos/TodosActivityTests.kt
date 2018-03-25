@@ -1,4 +1,4 @@
-package com.methodsignature.simpletodo.todo
+package com.methodsignature.simpletodo.todos
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches

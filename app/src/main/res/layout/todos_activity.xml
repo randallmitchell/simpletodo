@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.methodsignature.simpletodo.todo.DefaultTodosView
+    <com.methodsignature.simpletodo.todos.DefaultTodosView
         android:id="@+id/todos_activity_todos_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

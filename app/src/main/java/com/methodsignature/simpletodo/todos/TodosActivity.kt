@@ -6,13 +6,7 @@ import com.methodsignature.simpletodo.R
 
 class TodosActivity: AppCompatActivity() {
 
-    private val todos = listOf(
-        "Walk the dog",
-        "Get an oil change",
-        "Mop the kitchen",
-        "Do the dishes",
-        "Wash the laundry"
-    )
+    private val todos = mutableListOf<String>()
 
     private lateinit var todosView: TodosView
 
