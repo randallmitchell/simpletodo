@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ktae_translucent_black">#77000000</color>
+    <color name="ktae_translucent_lt_gray">#77BBBBBB</color>
+    <color name="ktae_transparent">#00000000</color>
+    <color name="ktae_white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+</resources>

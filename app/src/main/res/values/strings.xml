@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SimpleTodo</string>
+
+    <string name="create_todo_dialog_title">What\'s there Todo?</string>
+    <string name="create_todo_dialog_message">Add it here and do it later.</string>
+    <string name="create_todo_dialog_add_button">Add</string>
+    <string name="create_todo_dialog_cancel_button">Cancel</string>
+    <string name="create_todo_dialog_fragment_input_hint">Go grocery shopping</string>
+    <string name="create_todos_dialog_hint">Go grocery shopping</string>
 </resources>

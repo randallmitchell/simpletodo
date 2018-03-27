@@ -1,4 +1,4 @@
-package com.methodsignature.simpletodo.todo
+package com.methodsignature.simpletodo.todos
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
@@ -9,17 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.methodsignature.ktandroidext.view.hideWithFade
+import com.methodsignature.ktandroidext.view.showWithFade
 import com.methodsignature.simpletodo.R
 
 
 interface TodosView {
     fun displayTodos(todos: List<String>)
+    fun showCreateNewTodo()
+    fun closeCreateNewTodo()
 }
 
 class DefaultTodosView: FrameLayout, TodosView {
 
+    constructor(context: Context): super(context)
+    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet)
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr)
+
     interface Listener {
-        fun onAddTodoButtonClicked()
+        fun onCreateTodoButtonClicked()
+        fun onNewTodo(text: String)
+        fun onCreateNewTodoCancelRequested()
     }
 
     private var listener: Listener? = null
@@ -28,38 +38,48 @@ class DefaultTodosView: FrameLayout, TodosView {
 
     private val adapter = ListAdapter()
     private val todosList by lazy { findViewById<RecyclerView>(R.id.todos_view_list) }
-
     private val newTodoButton by lazy { findViewById<View>(R.id.todos_view_new_todo_button) }
+    private val createTodoDialog by lazy { findViewById<CreateTodoDialogView>(R.id.todos_view_dialog_view) }
 
-    constructor(context: Context): super(context) {
-        init()
-        newTodoButton.setOnClickListener {
-            val listener = requireNotNull(listener) { "Listener cannot be null." }
-            listener.onAddTodoButtonClicked()
-        }
-    }
-
-    constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet) {
-        init()
-    }
-
-    constructor(
-        context: Context,
-        attributeSet: AttributeSet?,
-        defStyleAttr: Int
-    ) : super(context, attributeSet, defStyleAttr) {
-        init()
-    }
-
-    fun setListener(listener: Listener) {
-        this.listener = listener
-    }
-
-    private fun init() {
+    init {
         LayoutInflater.from(context).inflate(R.layout.todos_view, this, true)
         todosList.layoutManager = LinearLayoutManager(context)
         todosList.setHasFixedSize(true)
         todosList.adapter = adapter
+
+        newTodoButton.setOnClickListener {
+            val listener = requireNotNull(listener) { "Listener cannot be null." }
+            listener.onCreateTodoButtonClicked()
+        }
+
+        createTodoDialog.setListener(
+            object: CreateTodoDialogView.Listener {
+                override fun onCreateTodo(text: String) {
+                    requireNotNull(listener).onNewTodo(text)
+                }
+
+                override fun onCancel() {
+                    requireNotNull(listener).onCreateNewTodoCancelRequested()
+                }
+            }
+        )
+    }
+
+    override fun closeCreateNewTodo() {
+        createTodoDialog.hideWithFade {
+            createTodoDialog.clear()
+            createTodoDialog.dismissKeyboard()
+        }
+    }
+
+    override fun showCreateNewTodo() {
+        createTodoDialog.showWithFade {
+            createTodoDialog.attemptToShowKeyboard()
+        }
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 
     override fun displayTodos(todos: List<String>) {

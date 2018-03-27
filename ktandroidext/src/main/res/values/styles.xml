@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="KtaeDialogButton" parent="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@drawable/ktae_dialog_button_background</item>
+    </style>
+
+</resources>
