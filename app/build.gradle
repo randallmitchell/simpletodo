@@ -26,6 +26,8 @@ ext.support_version_27 = "27.1.0"
 ext.espresso_version = "3.0.1"
 
 dependencies {
+
+    implementation project(':ktandroidext')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$support_version_27"
@@ -35,4 +37,6 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
 
     implementation "com.android.support:recyclerview-v7:$support_version_27"
+    implementation "com.android.support:design:$support_version_27"
+    implementation "com.android.support.constraint:constraint-layout:1.0.2"
 }

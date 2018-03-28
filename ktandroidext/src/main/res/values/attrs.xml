@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="KtaeDialogView">
+        <attr name="ktae_dialog_title" format="reference"/>
+        <attr name="ktae_dialog_message" format="reference"/>
+        <attr name="ktae_dialog_message_positive_button" format="reference"/>
+        <attr name="ktae_dialog_message_negative_button" format="reference"/>
+    </declare-styleable>
+
+</resources>

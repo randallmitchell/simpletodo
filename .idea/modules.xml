@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SimpleTodo.iml" filepath="$PROJECT_DIR$/SimpleTodo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ktandroidext/ktandroidext.iml" filepath="$PROJECT_DIR$/ktandroidext/ktandroidext.iml" />
     </modules>
   </component>
 </project>
