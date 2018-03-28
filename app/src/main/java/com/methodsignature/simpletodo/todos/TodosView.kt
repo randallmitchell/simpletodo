@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.methodsignature.ktandroidext.view.hideWithFade
-import com.methodsignature.ktandroidext.view.showWithFade
+import com.methodsignature.ktandroidext.view.fadeToGone
+import com.methodsignature.ktandroidext.view.fadeToVisible
 import com.methodsignature.simpletodo.R
 
 
@@ -40,6 +40,7 @@ class DefaultTodosView: FrameLayout, TodosView {
     private val todosList by lazy { findViewById<RecyclerView>(R.id.todos_view_list) }
     private val newTodoButton by lazy { findViewById<View>(R.id.todos_view_new_todo_button) }
     private val createTodoDialog by lazy { findViewById<CreateTodoDialogView>(R.id.todos_view_dialog_view) }
+    private val emptyListMessage by lazy { findViewById<View>(R.id.todos_view_empty_list_message) }
 
     init {
         LayoutInflater.from(context).inflate(R.layout.todos_view, this, true)
@@ -66,14 +67,14 @@ class DefaultTodosView: FrameLayout, TodosView {
     }
 
     override fun closeCreateNewTodo() {
-        createTodoDialog.hideWithFade {
+        createTodoDialog.fadeToGone {
             createTodoDialog.clear()
             createTodoDialog.dismissKeyboard()
         }
     }
 
     override fun showCreateNewTodo() {
-        createTodoDialog.showWithFade {
+        createTodoDialog.fadeToVisible {
             createTodoDialog.attemptToShowKeyboard()
         }
     }
@@ -85,6 +86,11 @@ class DefaultTodosView: FrameLayout, TodosView {
     override fun displayTodos(todos: List<String>) {
         this.todos.clear()
         this.todos.addAll(todos)
+        if (todos.isEmpty()) {
+            emptyListMessage.fadeToVisible()
+        } else {
+            emptyListMessage.fadeToGone()
+        }
         adapter.notifyDataSetChanged()
     }
 

@@ -7,4 +7,6 @@
     <string name="create_todo_dialog_cancel_button">Cancel</string>
     <string name="create_todo_dialog_fragment_input_hint">Go grocery shopping</string>
     <string name="create_todos_dialog_hint">Go grocery shopping</string>
+
+    <string name="todos_view_empty_list_message">You have no Todos queued.\n\n[ tap (+) to add more ]</string>
 </resources>
