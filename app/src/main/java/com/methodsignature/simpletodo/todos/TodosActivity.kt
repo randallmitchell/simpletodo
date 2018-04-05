@@ -2,22 +2,21 @@ package com.methodsignature.simpletodo.todos
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.methodsignature.ktandroidext.app.lazyFindViewById
 import com.methodsignature.simpletodo.R
 
 class TodosActivity: AppCompatActivity() {
 
-    private val todos = mutableListOf<String>()
+    private val todosView: TodosView by lazyFindViewById<DefaultTodosView>(R.id.todos_activity_todos_view)
 
-    private lateinit var todosView: DefaultTodosView
+    private var incrementedId = 1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.todos_activity)
 
-        todosView = findViewById(R.id.todos_activity_todos_view)
-
         todosView.setListener(
-            object: DefaultTodosView.Listener {
+            object: TodosView.Listener {
                 override fun onCreateTodoButtonClicked() {
                     todosView.showCreateNewTodo()
                 }
@@ -27,12 +26,17 @@ class TodosActivity: AppCompatActivity() {
                 }
 
                 override fun onNewTodo(text: String) {
-                    todos.add(text)
                     todosView.closeCreateNewTodo()
-                    todosView.displayTodos(todos)
+                    todosView.appendTodo(TodoViewModel(incrementedId++, text))
+                }
+
+                override fun onTodoCheckBoxStateChanged(todo: TodoViewModel, isChecked: Boolean) {
+                    if (isChecked) {
+                        todosView.removeTodo(todo)
+                    }
                 }
             }
         )
-        todosView.displayTodos(todos)
+        todosView.displayTodos(listOf())
     }
 }

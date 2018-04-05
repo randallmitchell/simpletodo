@@ -3,6 +3,7 @@ package com.methodsignature.simpletodo.todos
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.action.ViewActions.typeText
+import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
@@ -11,6 +12,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.methodsignature.simpletodo.R
 import com.methodsignature.simpletodo.`when`
+import com.methodsignature.simpletodo.given
 import com.methodsignature.simpletodo.then
 import org.hamcrest.Matchers.not
 import org.junit.Rule
@@ -35,10 +37,10 @@ class TodosActivityTests {
     @Test
     fun displaysTodoTextsOnScreen() {
         todos.forEach {
-            `when`("a user adds a Todo") { aUserAddsATodo(it) }
+            `when`("a user adds a todo") { aUserAddsATodo(it) }
         }
         todos.forEach {
-            then("a todo item should be displayed") { aTodoItemShouldBeDisplayedWithText(it) }
+            then("a todo item should be displayed") { aTodoItemWithTextShouldBeDisplayed(it) }
         }
     }
 
@@ -51,6 +53,24 @@ class TodosActivityTests {
     fun emptyListIsNotVisibleWhenListIsNotEmpty() {
         `when`("a todo item is added") { aUserAddsATodo(todos[0]) }
         then("the empty list message should not be visible") { assertMessageViewVisibility(false) }
+    }
+
+    @Test
+    fun aDeletedItemIsRemoved() {
+        todos.forEach {
+            given("a todo item is added") { aUserAddsATodo(it) }
+        }
+        val deletedItem = todos[3]
+        `when`("todo '$deletedItem' is completed by the user") { aUserMarksTodoAsComplete(deletedItem) }
+        then("a todo item should not be displayed") { aTodoItemWithTextShouldNotBeDisplayed(deletedItem) }
+    }
+
+    @Test
+    fun emptyListMessageAppearsWhenListIsEmptied() {
+        val item = todos[0]
+        given("a todo item is added") { aUserAddsATodo(item) }
+        `when`("todo '$item' is completed by the user") { aUserMarksTodoAsComplete(item) }
+        then("the empty list message should be visible") { assertMessageViewVisibility(true) }
     }
 
     private fun assertMessageViewVisibility(shouldBeVisible: Boolean) {
@@ -68,7 +88,15 @@ class TodosActivityTests {
         onView(withId(R.id.ktae_dialog_positive_button)).perform(click())
     }
 
-    private fun aTodoItemShouldBeDisplayedWithText(todo: String) {
+    private fun aTodoItemWithTextShouldBeDisplayed(todo: String) {
         onView(withText(todo)).check(matches(isDisplayed()))
+    }
+
+    private fun aTodoItemWithTextShouldNotBeDisplayed(todo: String) {
+        onView(withText(todo)).check(doesNotExist())
+    }
+
+    private fun aUserMarksTodoAsComplete(todo: String) {
+        onView(withText(todo)).perform(click())
     }
 }
