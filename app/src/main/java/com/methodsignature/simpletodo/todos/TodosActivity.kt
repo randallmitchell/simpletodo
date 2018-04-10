@@ -17,23 +17,12 @@ class TodosActivity: AppCompatActivity() {
 
         todosView.setListener(
             object: TodosView.Listener {
-                override fun onCreateTodoButtonClicked() {
-                    todosView.showCreateNewTodo()
-                }
-
-                override fun onCreateNewTodoCancelRequested() {
-                    todosView.closeCreateNewTodo()
-                }
-
-                override fun onNewTodo(text: String) {
-                    todosView.closeCreateNewTodo()
+                override fun onNewTodoEntered(text: String) {
                     todosView.appendTodo(TodoViewModel(incrementedId++, text))
                 }
 
-                override fun onTodoCheckBoxStateChanged(todo: TodoViewModel, isChecked: Boolean) {
-                    if (isChecked) {
-                        todosView.removeTodo(todo)
-                    }
+                override fun onTodoMarkedComplete(todo: TodoViewModel) {
+                    todosView.removeTodo(todo)
                 }
             }
         )

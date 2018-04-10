@@ -21,18 +21,14 @@ data class TodoViewModel(val id: Long, val text: String)
 
 interface TodosView {
     interface Listener {
-        fun onCreateTodoButtonClicked()
-        fun onNewTodo(text: String)
-        fun onTodoCheckBoxStateChanged(todo: TodoViewModel, isChecked: Boolean)
-        fun onCreateNewTodoCancelRequested()
+        fun onNewTodoEntered(text: String)
+        fun onTodoMarkedComplete(todo: TodoViewModel)
     }
 
     fun setListener(listener: Listener)
     fun displayTodos(todoViewModels: List<TodoViewModel>)
     fun removeTodo(todoViewModel: TodoViewModel)
     fun appendTodo(todoViewModel: TodoViewModel)
-    fun showCreateNewTodo()
-    fun closeCreateNewTodo()
 }
 
 class DefaultTodosView: FrameLayout, TodosView {
@@ -59,34 +55,29 @@ class DefaultTodosView: FrameLayout, TodosView {
         todosList.adapter = adapter
 
         newTodoButton.setOnClickListener {
-            val listener = requireNotNull(listener) { "Listener cannot be null." }
-            listener.onCreateTodoButtonClicked()
+            createTodoDialog.fadeToVisible {
+                createTodoDialog.attemptToShowKeyboard()
+            }
         }
 
         createTodoDialog.setListener(
             object: CreateTodoDialogView.Listener {
                 override fun onCreateTodo(text: String) {
-                    requireNotNull(listener).onNewTodo(text)
+                    createTodoDialog.fadeToGone {
+                        createTodoDialog.clear()
+                        createTodoDialog.dismissKeyboard()
+                    }
+                    requireNotNull(listener).onNewTodoEntered(text)
                 }
 
                 override fun onCancel() {
-                    requireNotNull(listener).onCreateNewTodoCancelRequested()
+                    createTodoDialog.fadeToGone {
+                        createTodoDialog.clear()
+                        createTodoDialog.dismissKeyboard()
+                    }
                 }
             }
         )
-    }
-
-    override fun closeCreateNewTodo() {
-        createTodoDialog.fadeToGone {
-            createTodoDialog.clear()
-            createTodoDialog.dismissKeyboard()
-        }
-    }
-
-    override fun showCreateNewTodo() {
-        createTodoDialog.fadeToVisible {
-            createTodoDialog.attemptToShowKeyboard()
-        }
     }
 
     override fun setListener(listener: TodosView.Listener) {
@@ -152,7 +143,7 @@ class DefaultTodosView: FrameLayout, TodosView {
                             button.animateTextColorChange(
                                 toColor = ContextCompat.getColor(context, R.color.lightGray)
                             ) {
-                                requireNotNull(listener).onTodoCheckBoxStateChanged(todos[holder.adapterPosition], isChecked)
+                                requireNotNull(listener).onTodoMarkedComplete(todos[holder.adapterPosition])
                             }
                         }
                     }
