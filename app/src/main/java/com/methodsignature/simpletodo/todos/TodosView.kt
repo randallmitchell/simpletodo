@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.methodsignature.ktandroidext.view.animateStrikeThrough
 import com.methodsignature.ktandroidext.view.animateTextColorChange
 import com.methodsignature.ktandroidext.view.fadeToGone
@@ -21,7 +22,7 @@ data class TodoViewModel(val id: Long, val text: String)
 
 interface TodosView {
     interface Listener {
-        fun onNewTodoEntered(text: String)
+        fun onNewTodoSubmitted(text: String)
         fun onTodoMarkedComplete(todo: TodoViewModel)
     }
 
@@ -29,6 +30,8 @@ interface TodosView {
     fun displayTodos(todoViewModels: List<TodoViewModel>)
     fun removeTodo(todoViewModel: TodoViewModel)
     fun appendTodo(todoViewModel: TodoViewModel)
+    fun displayPersistentError()
+    fun displayTransientError(message: String)
 }
 
 class DefaultTodosView: FrameLayout, TodosView {
@@ -46,7 +49,9 @@ class DefaultTodosView: FrameLayout, TodosView {
     private val todosList: RecyclerView by lazyFindViewById(R.id.todos_view_list)
     private val newTodoButton: View by lazyFindViewById(R.id.todos_view_new_todo_button)
     private val createTodoDialog: CreateTodoDialogView by lazyFindViewById(R.id.todos_view_dialog_view)
+
     private val emptyListMessage: View by lazyFindViewById(R.id.todos_view_empty_list_message)
+    private val errorMessage: View by lazyFindViewById(R.id.todos_view_error_message)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.todos_view, this, true)
@@ -67,7 +72,7 @@ class DefaultTodosView: FrameLayout, TodosView {
                         createTodoDialog.clear()
                         createTodoDialog.dismissKeyboard()
                     }
-                    requireNotNull(listener).onNewTodoEntered(text)
+                    requireNotNull(listener).onNewTodoSubmitted(text)
                 }
 
                 override fun onCancel() {
@@ -85,10 +90,23 @@ class DefaultTodosView: FrameLayout, TodosView {
     }
 
     override fun displayTodos(todoViewModels: List<TodoViewModel>) {
-        this.todos.clear()
-        this.todos.addAll(todoViewModels)
+        todos.clear()
+        todos.addAll(todoViewModels)
+
         emptyListMessage.toggleVisibleOnEmptyList()
+        errorMessage.fadeToGone()
+
         adapter.notifyDataSetChanged()
+    }
+
+    override fun displayPersistentError() {
+        emptyListMessage.fadeToGone()
+        errorMessage.fadeToVisible()
+        todosList.fadeToGone()
+    }
+
+    override fun displayTransientError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
     override fun removeTodo(todoViewModel: TodoViewModel) {
@@ -105,7 +123,10 @@ class DefaultTodosView: FrameLayout, TodosView {
 
     override fun appendTodo(todoViewModel: TodoViewModel) {
         todos.add(todoViewModel)
+
         emptyListMessage.toggleVisibleOnEmptyList()
+        errorMessage.fadeToGone()
+
         adapter.notifyItemInserted(todos.size - 1)
     }
 

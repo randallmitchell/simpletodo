@@ -1,0 +1,16 @@
+CREATE TABLE todo (
+  _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  description TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM todo;
+
+insertRow:
+INSERT INTO todo(description)
+VALUES (?);
+
+deleteRow:
+DELETE FROM todo
+WHERE _id = ?;

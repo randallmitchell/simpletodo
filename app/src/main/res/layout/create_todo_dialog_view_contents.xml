@@ -11,6 +11,6 @@
         android:inputType="text"
         android:minWidth="250dp"
         android:lines="1"
-        android:hint="@string/create_todos_dialog_hint" />
+        android:hint="@string/create_todo_dialog_hint" />
 
 </FrameLayout>
