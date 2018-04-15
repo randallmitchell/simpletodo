@@ -1,26 +1,24 @@
 package com.methodsignature.simpletodo.todos
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.methodsignature.ktandroidext.app.lazyFindViewById
 import com.methodsignature.simpletodo.R
+import com.methodsignature.simpletodo.android.BaseActivity
 import com.methodsignature.simpletodo.interactors.CreateTodoInteractor
 import com.methodsignature.simpletodo.interactors.DeleteTodoInteractor
 import com.methodsignature.simpletodo.interactors.GetAllTodosInteractor
-import com.methodsignature.simpletodo.model.Database
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class TodosActivity: AppCompatActivity() {
+class TodosActivity: BaseActivity() {
 
     private val todosView: TodosView by lazyFindViewById<DefaultTodosView>(R.id.todos_activity_todos_view)
 
-    private lateinit var database: Database
-    private lateinit var getAllTodosInteractor: GetAllTodosInteractor
-    private lateinit var createTodoInteractor: CreateTodoInteractor
-    private lateinit var deleteTodoInteractor: DeleteTodoInteractor
+    lateinit var getAllTodosInteractor: GetAllTodosInteractor
+    lateinit var createTodoInteractor: CreateTodoInteractor
+    lateinit var deleteTodoInteractor: DeleteTodoInteractor
 
     private var getTodosDisposable: Disposable? = null
     private var createTodoDisposable: Disposable? = null
@@ -28,10 +26,6 @@ class TodosActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        database = Database(applicationContext as android.app.Application)
-        getAllTodosInteractor = GetAllTodosInteractor(database)
-        createTodoInteractor = CreateTodoInteractor(database)
-        deleteTodoInteractor = DeleteTodoInteractor(database)
         setContentView(R.layout.todos_activity)
 
         todosView.setListener(
