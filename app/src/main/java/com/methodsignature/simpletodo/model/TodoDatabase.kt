@@ -1,17 +1,12 @@
 package com.methodsignature.simpletodo.model
 
-import android.app.Application
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.db.SupportSQLiteOpenHelper
-import android.arch.persistence.db.SupportSQLiteOpenHelper.Configuration
-import android.arch.persistence.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.methodsignature.simpletodo.TodoModel
 import com.squareup.sqlbrite3.BriteDatabase
-import com.squareup.sqlbrite3.SqlBrite
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import java.io.IOException
 
 data class Todo(val id: Long, val description: String): TodoModel {
@@ -32,23 +27,15 @@ data class Todo(val id: Long, val description: String): TodoModel {
     }
 }
 
-class Database(application: Application) {
+interface Database {
+    fun getAll(): Observable<List<Todo>>
+    fun create(description: String): Single<Long>
+    fun delete(id: Long): Completable
+}
 
-    private val db: BriteDatabase
+class SqlBriteDatabase(private val db: BriteDatabase): Database {
 
-    init {
-        val sqlBrite = SqlBrite.Builder().build()
-
-        val configuration = Configuration.builder(application)
-            .name("todo.db")
-            .callback(DbCallback())
-            .build()
-        val factory = FrameworkSQLiteOpenHelperFactory()
-        val helper = factory.create(configuration)
-        db = sqlBrite.wrapDatabaseHelper(helper, Schedulers.io())
-    }
-
-    fun getAll(): Observable<List<Todo>> {
+    override fun getAll(): Observable<List<Todo>> {
         val query = Todo.FACTORY.selectAll()
         return db.createQuery(query.tables, query.sql)
             .map {
@@ -66,7 +53,7 @@ class Database(application: Application) {
             }
     }
 
-    fun create(description: String): Single<Long> {
+    override fun create(description: String): Single<Long> {
         return Single.fromCallable {
             val statement = TodoModel.InsertRow(db.writableDatabase).apply {
                 bind(description)
@@ -75,7 +62,7 @@ class Database(application: Application) {
         }
     }
 
-    fun delete(id: Long): Completable {
+    override fun delete(id: Long): Completable {
         return Completable.fromCallable {
             val statement = TodoModel.DeleteRow(db.writableDatabase).apply {
                 bind(id)

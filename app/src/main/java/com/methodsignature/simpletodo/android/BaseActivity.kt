@@ -10,7 +10,7 @@ import com.methodsignature.simpletodo.todos.TodosActivityScope
 open class BaseActivity: AppCompatActivity() {
 
     private val applicationScope by lazy {
-        (applicationContext as Application).applicationScope
+        (applicationContext as Application).getScope()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

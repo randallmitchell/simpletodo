@@ -7,7 +7,7 @@ import com.methodsignature.simpletodo.interactors.GetAllTodosInteractor
 
 class TodosActivityScope(private val applicationScope: ApplicationScope) {
     fun bind(activity: TodosActivity) {
-        val db = applicationScope.database
+        val db = applicationScope.getDatabase()
         activity.getAllTodosInteractor = GetAllTodosInteractor(db)
         activity.createTodoInteractor = CreateTodoInteractor(db)
         activity.deleteTodoInteractor = DeleteTodoInteractor(db)
