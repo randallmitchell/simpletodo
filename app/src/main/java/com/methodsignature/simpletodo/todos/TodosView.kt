@@ -2,6 +2,7 @@ package com.methodsignature.simpletodo.todos
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -90,13 +91,33 @@ class DefaultTodosView: FrameLayout, TodosView {
     }
 
     override fun displayTodos(todoViewModels: List<TodoViewModel>) {
+
+        val diffResult = DiffUtil.calculateDiff(
+            object : DiffUtil.Callback() {
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    return todos[oldItemPosition].id == todoViewModels[newItemPosition].id
+                }
+
+                override fun getOldListSize(): Int {
+                    return todos.size
+                }
+
+                override fun getNewListSize(): Int {
+                    return todoViewModels.size
+                }
+
+                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    return todos[oldItemPosition] == todoViewModels[newItemPosition]
+                }
+            }
+        )
+
         todos.clear()
         todos.addAll(todoViewModels)
+        diffResult.dispatchUpdatesTo(adapter)
 
         emptyListMessage.toggleVisibleOnEmptyList()
         errorMessage.fadeToGone()
-
-        adapter.notifyDataSetChanged()
     }
 
     override fun displayPersistentError() {
